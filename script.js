@@ -2,7 +2,7 @@
  * CONFIGURATION
  * Replace the number with your actual WhatsApp number (CountryCode + Number)
  */
-const ADMIN_WHATSAPP = "919876543210"; 
+const ADMIN_WHATSAPP = "918078240018"; 
 
 /**
  * PRODUCT DATABASE
@@ -155,3 +155,4 @@ search.oninput = (e) => {
 document.getElementById('mainWhatsapp').href = `https://wa.me/${ADMIN_WHATSAPP}?text=Hello Admin, I have a question.`;
 
 render(products);
+
