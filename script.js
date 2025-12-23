@@ -48,6 +48,15 @@ const products = [
         images: [
             "4.jpg"
         ]
+    }, {
+        id: 5,
+        title: "VILLA X SALAH X SUAREZ X NEYMAR COMBO",
+        price: "₹3300",
+        isSoldOut: false,
+        description: "VILLA X SALAH X SUAREZ X NEYMAR COMBO",
+        images: [
+            "69623c3b-013d-4866-b161-24a8e7a2ef71.jpeg"
+        ]
     }
 ];
 
@@ -155,4 +164,5 @@ search.oninput = (e) => {
 document.getElementById('mainWhatsapp').href = `https://wa.me/${ADMIN_WHATSAPP}?text=Hello Admin, I have a question.`;
 
 render(products);
+
 
