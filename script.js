@@ -12,35 +12,41 @@ const ADMIN_WHATSAPP = "919876543210";
 const products = [
     {
         id: 1,
-        title: "Messi 99 Legendary ID",
-        price: "$49.99",
+        title: "BIG TIME NEY X OSIMHEN X RAPHI X GUARDIOLA X ODDO",
+        price: "₹1249",
         isSoldOut: true, 
-        description: "Includes 2015 Big Time Messi, 102 Rated Squad, and 4000 eFootball Coins. Fully optimized manager proficiency.",
+        description: "BIG TIME NEY X OSIMHEN X RAPHI X GUARDIOLA X ODDO",
         images: [
-            "https://picsum.photos/id/237/800/500",
-            "https://picsum.photos/id/238/800/500",
-            "https://picsum.photos/id/239/800/500"
+            "1.jpg"
         ]
     },
     {
         id: 2,
-        title: "Ronaldo Elite Account",
-        price: "$35.00",
+        title: "BIGTIME YAMAL X BLITZ RAUL",
+        price: "₹399",
         isSoldOut: false,
-        description: "Features Epic CR7, Real Madrid full squad, and 10+ Legendary players. Division 1 ready.",
+        description: "BIGTIME YAMAL X BLITZ RAUL x best budget id to grow",
         images: [
-            "https://picsum.photos/id/240/800/500",
-            "https://picsum.photos/id/241/800/500"
+            "2.jpg"
         ]
     },
     {
         id: 3,
-        title: "Neymar Santos Edition",
-        price: "$40.00",
+        title: "MINI BEAST ID X FORLAN X BLITZ GIROUD C X VITINHA X PALMET X CECH",
+        price: "₹3500",
         isSoldOut: false,
-        description: "Special Santos FC Neymar Jr card with 99 dribbling. Includes many Epic Brazil legends.",
+        description: "MINI BEAST ID X FORLAN X BLITZ GIROUD C X VITINHA X PALMET X CECH",
         images: [
-            "https://picsum.photos/id/242/800/500"
+            "3.jpg"
+        ]
+    },    {
+        id: 4,
+        title: "COLE X NEYMAR X VARDY X BALANCED ONE",
+        price: "₹1549",
+        isSoldOut: false,
+        description: "COLE X NEYMAR X VARDY X BALANCED ONE",
+        images: [
+            "4.jpg"
         ]
     }
 ];
@@ -147,4 +153,5 @@ search.oninput = (e) => {
 
 // INITIALIZE
 document.getElementById('mainWhatsapp').href = `https://wa.me/${ADMIN_WHATSAPP}?text=Hello Admin, I have a question.`;
+
 render(products);
