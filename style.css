@@ -1,273 +1,42 @@
-/* --- RESET & VARIABLES --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #0b0f19; --card-bg: #151b2b; --accent-color: #00f2ff; }
 
-:root {
-    --bg-color: #0b0f19;
-    --card-bg: #151b2b;
-    --accent-color: #00f2ff;
-    --text-primary: #ffffff;
-    --text-secondary: #8b9bb4;
-    --sold-out-red: #ff0000;
-}
+body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-}
+/* ANIMATION */
+.icon-box { text-align: center; font-size: 3.5rem; color: var(--accent-color); animation: floatVertical 3s infinite ease-in-out; margin-bottom: 20px; }
+@keyframes floatVertical { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
 
-/* --- HERO & ANIMATION --- */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-    background: radial-gradient(circle at center, #1a253a 0%, var(--bg-color) 80%);
-}
+.glow-text { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); font-family: 'Orbitron'; }
+.divider { height: 1px; width: 80%; margin: 30px auto; background: linear-gradient(90deg, transparent, var(--accent-color), transparent); border: none; opacity: 0.4; }
 
-.icon-box {
-    font-size: 4rem;
-    color: var(--accent-color);
-    margin-bottom: 20px;
-    display: inline-block;
-    filter: drop-shadow(0 0 15px var(--accent-color));
-    /* Smooth Vertical Floating */
-    animation: floatVertical 3s ease-in-out infinite;
-}
+.hero { text-align: center; padding: 50px 20px; }
+.search-container { max-width: 450px; margin: auto; position: relative; }
+.search-container input { width: 100%; padding: 12px 45px; border-radius: 25px; background: #1e263b; border: 1px solid #333; color: white; outline: none; }
+.search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--accent-color); }
 
-@keyframes floatVertical {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
+/* GRID */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; padding: 20px; max-width: 1200px; margin: auto; }
+.card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #222; cursor: pointer; position: relative; transition: 0.3s; }
+.card:hover { transform: translateY(-8px); border-color: var(--accent-color); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-}
+.card-img-holder { height: 170px; position: relative; }
+.card-img-holder img { width: 100%; height: 100%; object-fit: cover; }
 
-.glow-text {
-    color: var(--accent-color);
-    text-shadow: 0 0 15px var(--accent-color);
-}
+/* SOLD OUT CENTERED */
+.sold-out-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background: #ff0000; color: white; padding: 8px 20px; border: 2px solid white; font-weight: bold; font-family: 'Orbitron'; z-index: 10; box-shadow: 0 0 15px red; }
+.card.sold-out img { filter: grayscale(1) brightness(0.3); }
 
-.hero-subtitle {
-    color: var(--text-secondary);
-    margin-bottom: 30px;
-}
+/* MODAL */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+.modal-content { background: var(--card-bg); width: 100%; max-width: 700px; border-radius: 15px; border: 1px solid var(--accent-color); overflow: hidden; position: relative; }
+#carouselMediaContainer img, #carouselMediaContainer video { width: 100%; max-height: 450px; display: block; object-fit: contain; }
+.nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--accent-color); border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; z-index: 11; }
+.next-btn { right: 10px; } .prev-btn { left: 10px; }
+.modal-info { padding: 25px; text-align: center; }
+.close-modal { position: absolute; top: 15px; right: 20px; color: white; font-size: 35px; cursor: pointer; z-index: 12; }
 
-/* --- SEARCH BAR --- */
-.search-container {
-    max-width: 500px;
-    margin: 0 auto;
-    position: relative;
-}
-
-.search-container i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-}
-
-.search-container input {
-    width: 100%;
-    padding: 12px 12px 12px 45px;
-    background: #1e263b;
-    border: 1px solid #2d3748;
-    border-radius: 30px;
-    color: white;
-    outline: none;
-    transition: 0.3s;
-}
-
-.search-container input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
-}
-
-/* --- GRID & CARDS --- */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    border: 1px solid #2d3748;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-}
-
-.card:hover {
-    transform: translateY(-10px) scale(1.02);
-    border-color: var(--accent-color);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.card-img-holder {
-    position: relative;
-    width: 100%;
-    height: 180px;
-}
-
-.card-img-holder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: 0.5s;
-}
-
-/* --- THE SOLD OUT BANNER FIX --- */
-.sold-out-badge {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-15deg);
-    background: var(--sold-out-red);
-    color: white;
-    padding: 10px 25px;
-    font-weight: bold;
-    font-family: 'Orbitron', sans-serif;
-    border: 2px solid white;
-    z-index: 10;
-    text-transform: uppercase;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-    white-space: nowrap;
-}
-
-.card.sold-out img {
-    filter: grayscale(100%) brightness(0.3);
-}
-
-.card-info {
-    padding: 20px;
-    text-align: center;
-}
-
-.price {
-    color: var(--accent-color);
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-/* --- MODAL STYLES --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.modal-content {
-    background: var(--card-bg);
-    width: 100%;
-    max-width: 800px;
-    border-radius: 15px;
-    overflow-y: auto;
-    max-height: 90vh;
-    border: 1px solid var(--accent-color);
-}
-
-.carousel-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-#modalImage {
-    width: 100%;
-    display: block;
-}
-
-.nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.7);
-    border: 1px solid var(--accent-color);
-    color: var(--accent-color);
-    padding: 15px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    z-index: 10;
-}
-
-.prev-btn { left: 10px; }
-.next-btn { right: 10px; }
-
-.modal-info {
-    padding: 30px;
-    text-align: center;
-}
-
-#modalDescription {
-    color: var(--text-secondary);
-    margin: 15px 0;
-}
-
-.close-modal {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-}
-
-/* --- WHATSAPP BUTTONS --- */
-.whatsapp-btn {
-    display: inline-block;
-    background: #25D366;
-    color: white;
-    text-decoration: none;
-    padding: 12px 25px;
-    border-radius: 30px;
-    font-weight: bold;
-    transition: 0.3s;
-    margin-top: 10px;
-}
-
-.whatsapp-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #25D366;
-}
-
-footer {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-secondary);
-}
-
-
-/* Standard Neon Divider Line */
-.divider {
-    height: 1px;
-    width: 80%; /* Doesn't touch the very edges for a cleaner look */
-    margin: 40px auto; /* Adds spacing above and below */
-    background: linear-gradient(
-        90deg, 
-        transparent, 
-        var(--accent-color), 
-        transparent
-    );
-    opacity: 0.5;
-    border: none;
-}
+/* BUTTONS */
+.whatsapp-btn { background: #25D366; color: white; padding: 12px 30px; text-decoration: none; border-radius: 30px; display: inline-block; font-weight: 600; transition: 0.3s; }
+.whatsapp-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px #25D366; }
+footer { text-align: center; padding: 50px; }
