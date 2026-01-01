@@ -11,54 +11,46 @@
 <body>
 
     <header class="hero">
-        <div class="icon-box">
-            <i class="fas fa-gamepad"></i>
-        </div>
+        <div class="icon-box"><i class="fas fa-gamepad"></i></div>
         <h1>eFOOTBALL <span class="glow-text">ID SHOWCASE</span></h1>
-        <p class="hero-subtitle">Premium gaming accounts with legendary squads.</p>
-        
         <div class="search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search by player or title (e.g. Messi)...">
-            
+            <input type="text" id="searchInput" placeholder="Search by player or account name...">
         </div>
+        <hr class="divider">
     </header>
 
-    
     <main class="container">
         <div id="productGrid" class="product-grid">
             </div>
     </main>
 
     <hr class="divider">
-
+    
     <footer>
-        <p>&copy; 2024 eFootball ID Showcase</p>
         <a href="#" id="mainWhatsapp" class="whatsapp-btn" target="_blank">
-            <i class="fab fa-whatsapp"></i> Contact Admin
+            <i class="fab fa-whatsapp"></i> Contact on WhatsApp
         </a>
     </footer>
 
     <div id="imageModal" class="modal">
         <span class="close-modal">&times;</span>
         <div class="modal-content">
-            <div class="carousel-wrapper">
+            <div class="carousel-wrapper" id="carouselMediaContainer">
                 <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-                <img id="modalImage" src="" alt="Screenshot">
                 <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
             </div>
-            
             <div class="modal-info">
                 <h2 id="modalTitle" class="glow-text"></h2>
-                <div class="price-tag" id="modalPrice"></div>
+                <div id="modalPrice" class="price-display"></div>
                 <p id="modalDescription"></p>
-                <a href="#" id="modalBuyBtn" class="whatsapp-btn" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Buy via WhatsApp
-                </a>
+                <a href="#" id="modalBuyBtn" class="whatsapp-btn" target="_blank">Buy Now</a>
             </div>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
