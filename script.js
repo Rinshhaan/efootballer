@@ -1,168 +1,77 @@
-/**
- * CONFIGURATION
- * Replace the number with your actual WhatsApp number (CountryCode + Number)
- */
-const ADMIN_WHATSAPP = "918078240018"; 
+// --- CONFIGURATION ---
+const WHATSAPP_NUMBER = "919876543210"; 
+const firebaseConfig = {
+    databaseURL: "https://efootballer-2ac2c-default-rtdb.firebaseio.com" // Get this from Firebase Console
+};
 
-/**
- * PRODUCT DATABASE
- * isSoldOut: true -> Shows the centered Red Banner
- * images: Array of images for the carousel slider
- */
-const products = [
-    {
-        id: 1,
-        title: "BIG TIME NEY X OSIMHEN X RAPHI X GUARDIOLA X ODDO",
-        price: "₹1249",
-        isSoldOut: true, 
-        description: "BIG TIME NEY X OSIMHEN X RAPHI X GUARDIOLA X ODDO",
-        images: [
-            "1.jpg"
-        ]
-    },
-    {
-        id: 2,
-        title: "BIGTIME YAMAL X BLITZ RAUL",
-        price: "₹399",
-        isSoldOut: false,
-        description: "BIGTIME YAMAL X BLITZ RAUL x best budget id to grow",
-        images: [
-            "2.jpg"
-        ]
-    },
-    {
-        id: 3,
-        title: "MINI BEAST ID X FORLAN X BLITZ GIROUD C X VITINHA X PALMET X CECH",
-        price: "₹3500",
-        isSoldOut: false,
-        description: "MINI BEAST ID X FORLAN X BLITZ GIROUD C X VITINHA X PALMET X CECH",
-        images: [
-            "3.jpg"
-        ]
-    },    {
-        id: 4,
-        title: "COLE X NEYMAR X VARDY X BALANCED ONE",
-        price: "₹1549",
-        isSoldOut: false,
-        description: "COLE X NEYMAR X VARDY X BALANCED ONE",
-        images: [
-            "4.jpg"
-        ]
-    }, {
-        id: 5,
-        title: "VILLA X SALAH X SUAREZ X NEYMAR COMBO",
-        price: "₹3300",
-        isSoldOut: false,
-        description: "VILLA X SALAH X SUAREZ X NEYMAR COMBO",
-        images: [
-            "69623c3b-013d-4866-b161-24a8e7a2ef71.jpeg"
-        ]
-    }
-];
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-// --- SELECT ELEMENTS ---
 const grid = document.getElementById('productGrid');
-const search = document.getElementById('searchInput');
 const modal = document.getElementById('imageModal');
-const mImg = document.getElementById('modalImage');
-const mTitle = document.getElementById('modalTitle');
-const mPrice = document.getElementById('modalPrice');
-const mDesc = document.getElementById('modalDescription');
-const mBuyBtn = document.getElementById('modalBuyBtn');
+const mediaWrap = document.getElementById('carouselMediaContainer');
 
-let currentProduct = null;
-let currentImgIndex = 0;
+let allProducts = [];
+let currentP = null, mediaIdx = 0;
 
-/**
- * RENDER THE GRID
- */
-function render(items) {
-    grid.innerHTML = "";
-    items.forEach(item => {
+// Fetch Data from Firebase
+db.ref('products').on('value', (snapshot) => {
+    const data = snapshot.val();
+    allProducts = data ? Object.values(data) : [];
+    renderGrid(allProducts);
+});
+
+function renderGrid(items) {
+    grid.innerHTML = items.length ? "" : "<p>No products available.</p>";
+    items.forEach(p => {
         const card = document.createElement('div');
-        card.className = `card ${item.isSoldOut ? 'sold-out' : ''}`;
-        
-        // Sold out logic
-        const badge = item.isSoldOut ? `<div class="sold-out-badge">SOLD OUT</div>` : "";
-
+        card.className = `card ${p.soldOut ? 'sold-out' : ''}`;
         card.innerHTML = `
             <div class="card-img-holder">
-                ${badge}
-                <img src="${item.images[0]}" alt="eFootball ID">
+                ${p.soldOut ? '<div class="sold-out-badge">SOLD OUT</div>' : ''}
+                <img src="${p.media[0].data}" alt="thumbnail">
             </div>
             <div class="card-info">
-                <h3>${item.title}</h3>
-                <p class="price">${item.price}</p>
+                <h3>${p.title}</h3>
+                <p class="glow-text">${p.price}</p>
             </div>
         `;
-        
-        card.onclick = () => openModal(item);
+        card.onclick = () => { currentP = p; mediaIdx = 0; openModal(); };
         grid.appendChild(card);
     });
 }
 
-/**
- * MODAL & CAROUSEL LOGIC
- */
-function openModal(p) {
-    currentProduct = p;
-    currentImgIndex = 0;
-
-    mTitle.innerText = p.title;
-    mPrice.innerText = `Price: ${p.price}`;
-    mDesc.innerText = p.description;
-    
-    // Set WhatsApp link for specific product
-    mBuyBtn.href = `https://wa.me/${ADMIN_WHATSAPP}?text=I am interested in: ${p.title}`;
-    
+function openModal() {
+    document.getElementById('modalTitle').innerText = currentP.title;
+    document.getElementById('modalDescription').innerText = currentP.desc;
+    document.getElementById('modalPrice').innerText = currentP.price;
+    document.getElementById('modalBuyBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=I want to buy: ${currentP.title}`;
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; // Stop background scroll
-    updateCarousel();
+    updateMedia();
 }
 
-function updateCarousel() {
-    mImg.src = currentProduct.images[currentImgIndex];
-    
-    // Hide arrows if only one image
-    const btns = document.querySelectorAll('.nav-btn');
-    btns.forEach(b => b.style.display = currentProduct.images.length > 1 ? 'block' : 'none');
+function updateMedia() {
+    const item = currentP.media[mediaIdx];
+    // Clear old media
+    const old = mediaWrap.querySelector('img, video');
+    if(old) old.remove();
+
+    const el = document.createElement(item.type === 'video' ? 'video' : 'img');
+    el.src = item.data;
+    if(item.type === 'video') { el.controls = true; el.autoplay = true; }
+    mediaWrap.insertBefore(el, mediaWrap.querySelector('.next-btn'));
 }
 
-document.querySelector('.next-btn').onclick = (e) => {
-    e.stopPropagation();
-    currentImgIndex = (currentImgIndex + 1) % currentProduct.images.length;
-    updateCarousel();
-};
+// Carousel Controls
+document.querySelector('.next-btn').onclick = () => { mediaIdx = (mediaIdx + 1) % currentP.media.length; updateMedia(); };
+document.querySelector('.prev-btn').onclick = () => { mediaIdx = (mediaIdx - 1 + currentP.media.length) % currentP.media.length; updateMedia(); };
+document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
 
-document.querySelector('.prev-btn').onclick = (e) => {
-    e.stopPropagation();
-    currentImgIndex = (currentImgIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
-    updateCarousel();
-};
-
-// Close modal
-document.querySelector('.close-modal').onclick = () => {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-};
-
-window.onclick = (e) => { if(e.target === modal) document.querySelector('.close-modal').onclick(); };
-
-/**
- * SEARCH LOGIC
- */
-search.oninput = (e) => {
+// Search Filter
+document.getElementById('searchInput').oninput = (e) => {
     const val = e.target.value.toLowerCase();
-    const filtered = products.filter(p => 
-        p.title.toLowerCase().includes(val) || 
-        p.description.toLowerCase().includes(val)
-    );
-    render(filtered);
+    renderGrid(allProducts.filter(p => p.title.toLowerCase().includes(val)));
 };
 
-// INITIALIZE
-document.getElementById('mainWhatsapp').href = `https://wa.me/${ADMIN_WHATSAPP}?text=Hello Admin, I have a question.`;
-
-render(products);
-
-
+document.getElementById('mainWhatsapp').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi!`;
