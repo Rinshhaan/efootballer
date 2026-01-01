@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Rinshan</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-form-card { max-width: 650px; margin: 40px auto; background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--accent-color); }
+        input, textarea { width: 100%; margin: 10px 0; padding: 12px; background: #1a2235; color: white; border: 1px solid #333; border-radius: 8px; font-family: 'Poppins'; }
+        #dropZone { border: 2px dashed var(--accent-color); padding: 40px; text-align: center; cursor: pointer; margin: 20px 0; border-radius: 10px; }
+        .preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .preview-grid img { width: 100%; height: 60px; object-fit: cover; border-radius: 5px; }
+
+        /* Management Section */
+        .manage-section { margin-top: 50px; border-top: 1px solid #333; padding-top: 20px; }
+        .manage-item { display: flex; align-items: center; justify-content: space-between; background: #1a2235; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent-color); }
+        .delete-btn { background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .delete-btn:hover { background: #cc0000; }
+    </style>
+</head>
+<body>
+    <div class="admin-form-card">
+        <h2 class="glow-text">UPLOAD NEW ID</h2>
+        <form id="uploadForm">
+            <input type="password" id="secretKey" placeholder="Enter Admin Secret Key" required>
+            <input type="text" id="title" placeholder="Account Name" required>
+            <input type="text" id="price" placeholder="Price" required>
+            <textarea id="desc" rows="4" placeholder="Description..." required></textarea>
+            
+            <label style="display:flex; align-items:center; gap:10px; margin: 10px 0; cursor:pointer;">
+                <input type="checkbox" id="soldOut" style="width: auto;"> Mark as SOLD OUT
+            </label>
+
+            <div id="dropZone">Click to Upload Images or Videos</div>
+            <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display:none">
+            <div class="preview-grid" id="previewArea"></div>
+
+            <button type="submit" class="whatsapp-btn" style="width:100%; border:none; margin-top:20px; cursor:pointer;">SAVE TO DATABASE</button>
+        </form>
+
+        <div class="manage-section">
+            <h3 class="glow-text">MANAGE CURRENT IDs</h3>
+            <div id="adminProductList">
+                <p>Loading products...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // --- 1. CONFIGURATION ---
+        const firebaseConfig = { databaseURL: "YOUR_FIREBASE_URL_HERE" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const MY_SECRET_KEY = "rinshan123"; // CHANGE THIS
+
+        let mediaData = [];
+        const fInput = document.getElementById('fileInput');
+        const pArea = document.getElementById('previewArea');
+        const adminList = document.getElementById('adminProductList');
+
+        // --- 2. UPLOAD LOGIC ---
+        document.getElementById('dropZone').onclick = () => fInput.click();
+
+        fInput.onchange = (e) => {
+            Array.from(e.target.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const type = file.type.startsWith('video') ? 'video' : 'image';
+                    mediaData.push({ type, data: ev.target.result });
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    pArea.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        document.getElementById('uploadForm').onsubmit = (e) => {
+            e.preventDefault();
+            if(document.getElementById('secretKey').value !== MY_SECRET_KEY) return alert("Wrong Key!");
+
+            const data = {
+                title: document.getElementById('title').value,
+                price: document.getElementById('price').value,
+                desc: document.getElementById('desc').value,
+                soldOut: document.getElementById('soldOut').checked,
+                media: mediaData
+            };
+
+            db.ref('products').push(data).then(() => {
+                alert("Saved!");
+                location.reload(); // Refresh to show in list
+            });
+        };
+
+        // --- 3. MANAGE/DELETE LOGIC ---
+        db.ref('products').on('value', (snapshot) => {
+            adminList.innerHTML = "";
+            const data = snapshot.val();
+            if (!data) {
+                adminList.innerHTML = "<p>No products found.</p>";
+                return;
+            }
+
+            // Loop through Firebase data
+            Object.keys(data).forEach(key => {
+                const p = data[key];
+                const div = document.createElement('div');
+                div.className = "manage-item";
+                div.innerHTML = `
+                    <div>
+                        <strong>${p.title}</strong><br>
+                        <small>${p.price} ${p.soldOut ? '(SOLD)' : ''}</small>
+                    </div>
+                    <button class="delete-btn" onclick="deleteProduct('${key}')">DELETE</button>
+                `;
+                adminList.appendChild(div);
+            });
+        });
+
+        function deleteProduct(productId) {
+            const pass = prompt("Enter Admin Key to confirm deletion:");
+            if (pass === MY_SECRET_KEY) {
+                db.ref('products/' + productId).remove()
+                  .then(() => alert("Product Removed!"))
+                  .catch(err => alert("Error: " + err));
+            } else {
+                alert("Incorrect Key!");
+            }
+        }
+    </script>
+</body>
+</html>
